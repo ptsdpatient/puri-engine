@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
 
         // Add a TextView in the center
         TextView textView = new TextView(this);
-        textView.setText("Hello Terminoid!");
+        textView.setText("Hello There!");
         textView.setTextSize(32);
         textView.setTextColor(Color.WHITE);
         textView.setGravity(Gravity.CENTER);

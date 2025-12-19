@@ -6,6 +6,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
 import core.GameApp;
+import core.screen.GameScreen;
+import core.Application;
+import core.screen.Screen;
 import gfx.Renderer;
 import gfx.TextureFactory;
 
@@ -15,7 +18,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class DesktopLauncher {
 
     private long window;
-    private GameApp game;
+    Application app;
     Renderer renderer;
     TextureFactory textureFactory;
 
@@ -28,10 +31,9 @@ public class DesktopLauncher {
 
         this.renderer = new LWJGLRenderer();
         this.textureFactory = new DesktopTextureFactory();
-
-        this.game = new GameApp(renderer, textureFactory);
-
-        loop(game);
+        this.app = new Application(this.textureFactory);
+        
+        loop(app);
         cleanup();
     }
 
@@ -70,10 +72,10 @@ public class DesktopLauncher {
     }
 
 
-    private void loop(GameApp game) {
+    private void loop(Application game) {
         while (!glfwWindowShouldClose(window)) {
             game.update(0.016f);  
-            game.render();
+            game.render(this.renderer);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
