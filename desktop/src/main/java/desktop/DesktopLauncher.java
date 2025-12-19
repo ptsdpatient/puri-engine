@@ -1,8 +1,13 @@
 package desktop;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+
+import core.GameApp;
+import gfx.Renderer;
+import gfx.TextureFactory;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -10,6 +15,9 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class DesktopLauncher {
 
     private long window;
+    private GameApp game;
+    Renderer renderer;
+    TextureFactory textureFactory;
 
     public static void main(String[] args) {
         new DesktopLauncher().run();
@@ -17,34 +25,55 @@ public class DesktopLauncher {
 
     public void run() {
         init();
-        loop();
+
+        this.renderer = new LWJGLRenderer();
+        this.textureFactory = new DesktopTextureFactory();
+
+        this.game = new GameApp(renderer, textureFactory);
+
+        loop(game);
         cleanup();
     }
 
     private void init() {
-        if (!glfwInit()) {
+        GLFWErrorCallback.createPrint(System.err).set();
+
+        if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
-        }
 
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         window = glfwCreateWindow(800, 600, "LWJGL Desktop", NULL, NULL);
-        if (window == NULL) {
+        if (window == NULL)
             throw new RuntimeException("Failed to create GLFW window");
-        }
 
         glfwMakeContextCurrent(window);
-        glfwSwapInterval(1); // vsync
+        glfwSwapInterval(1);
         glfwShowWindow(window);
 
         GL.createCapabilities();
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glViewport(0, 0, 800, 600);
+
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glOrtho(0, 800, 600, 0, -1, 1);
+
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
     }
 
-    private void loop() {
+
+    private void loop(GameApp game) {
         while (!glfwWindowShouldClose(window)) {
-            GL11.glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            game.update(0.016f);  
+            game.render();
 
             glfwSwapBuffers(window);
             glfwPollEvents();

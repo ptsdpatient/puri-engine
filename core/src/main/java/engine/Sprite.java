@@ -1,35 +1,28 @@
+// core
 package engine;
 
-public class Sprite {
-    public String texture;
-    public float x = 0, y = 0;
-    public float rotation = 0;
-    public float width = 64, height = 64;
+import gfx.Texture;
 
-    public Sprite(String texture) {
+public class Sprite {
+    private final Texture texture;
+    private float x, y;
+
+    public Sprite(Texture texture) {
         this.texture = texture;
-        this.rotation = 0f;
     }
 
-    public Sprite(String texture, float x, float y, float w, float h) {
-        this.texture = texture;
+    public Texture getTexture() { return texture; }
+    public float getX() { return x; }
+    public float getY() { return y; }
+
+    public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
-        this.width = w;
-        this.height = h;
-        this.rotation = 0f;
     }
-
-    public void translate(float dx, float dy) {
-        x += dx;
-        y += dy;
+    public float getWidth() {
+        return 64;
     }
-
-    public void rotate(float radians) {
-        rotation += radians;
-    }
-
-    public void setRotation(float radians) {
-        rotation = radians;
+    public float getHeight() {
+        return 64;
     }
 }

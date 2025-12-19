@@ -2,3 +2,9 @@
 .github
 .vscode
 build
+
+core/bin*
+desktop/bin*
+desktop/build*
+
+desktop/*.log
